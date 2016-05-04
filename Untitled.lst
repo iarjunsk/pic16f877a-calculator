@@ -1,0 +1,1031 @@
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001         LIST p=16f877a                  
+                      00002         #include "P16f877a.inc" 
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F877A processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00566         LIST
+                      00003 
+                      00004 ; 0x36,0x35 are used for storing the numbers respectively
+                      00005 ; 0x37  is used to store the condition 
+                      00006 ; 0x38, 0x39 are used to store the loop variables
+                      00007  
+                      00008 
+                      00009 ;-------------------------------------------------------------------------------------------------------
+                            ---------
+                      00010 ; configuring as input and output ports
+0000   1683           00011         bsf STATUS, RP0                         ;       select bank 1 
+                      00012 
+                      00013         ;FOR KEYPAD
+0001   30F0           00014         movlw b'11110000'                       
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0002   0086           00015         movwf TRISB                             
+                      00016 
+                      00017         ;FOR LCD CONFIG
+0003   30F8           00018         movlw b'11111000'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0004   0088           00019         movwf TRISD
+                      00020 
+                      00021         ;FOR LCD OUTPUT
+0005   3000           00022         movlw 0x00                                      
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0006   0087           00023         movwf TRISC                                     
+                      00024 
+0007   1283           00025         bcf STATUS, RP0                         ;       select bank 0
+                      00026 ;-------------------------------------------------------------------------------------------------------
+                            ----------
+                      00027 
+                      00028 
+                      00029 
+                      00030 
+                      00031 ;Main-------------------------------------------------------------------------------------------------
+0008                  00032 begin:                                          
+0008   200A           00033         call check_keypad               
+Warning[203]: Found opcode in column 1. (goto)
+0009   2808           00034 goto begin                              
+                      00035 ;-----------------------------------------------------------------------------------------------------
+                      00036 
+                      00037 
+                      00038 
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00039 ;The part which scans keypad----------------------------------------------------------------------------
+                            -
+Warning[207]: Found label after column 1. (check_keypad)
+000A                  00040  check_keypad                                   ;       This routine will scan the keypad for any key pr
+                            esses.
+                      00041 
+000A   1406           00042                 bsf PORTB, 0                    ;  scan the 1st column of keys          
+                      00043                 ;========================================================
+000B   1A06           00044                 btfsc PORTB, 4                  ;       has the ON/OFF key been pressed? if yes then
+000C   20A6           00045                 call ON
+                      00046         
+000D   1A86           00047                 btfsc PORTB, 5                  ;       has the 1 key been pressed? if yes then
+000E   2038           00048                 call  ONE
+                      00049                 
+000F   1B06           00050                 btfsc PORTB, 6                  ;       has the 4 key been pressed? if yes then
+0010   2047           00051                 call FOUR       
+                      00052                 
+0011   1B86           00053                 btfsc PORTB, 7                  ;       has the 7 key been pressed? if yes then
+0012   2056           00054                 call SEVEN
+                      00055         
+0013   1006           00056                 bcf PORTB, 0                    ;       finished column 1
+                      00057 
+                      00058         
+0014   1486           00059                 bsf PORTB, 1                    ;       scan the 2nd column of keys
+                      00060                 ;=========================================================
+0015   1A06           00061                 btfsc PORTB, 4                  ;       has the 0 key been pressed? if yes then
+0016   2033           00062                 CALL ZERO                               
+                      00063                 
+0017   1A86           00064                 btfsc PORTB, 5                  ;       has the 2 key been pressed? if yes then
+0018   203D           00065                 CALL TWO                                
+                      00066         
+0019   1B06           00067                 btfsc PORTB, 6                  ;       has the 5 key been pressed? if yes then
+001A   204C           00068                 CALL FIVE                               
+                      00069         
+001B   1B86           00070                 btfsc PORTB, 7                  ;       has the 8 key been pressed? if yes then
+001C   205B           00071                 CALL EIGHT                              
+                      00072         
+001D   1086           00073                 bcf PORTB, 1                    ;       finished column 2
+                      00074 
+                      00075         
+001E   1506           00076                 bsf PORTB, 2                    ; scan the 3rd column of keys
+                      00077                 ;=====================================================
+001F   1A06           00078                 btfsc PORTB, 4                  ;       has the = key been pressed? if yes then
+0020   2081           00079                 CALL EQUAL                              
+                      00080                 
+0021   1A86           00081                 btfsc PORTB, 5                  ;       has the 3 key been pressed? if yes then
+0022   2042           00082                 CALL THREE                              
+                      00083                 
+0023   1B06           00084                 btfsc PORTB, 6                  ;       has the 6 key been pressed? if yes then
+0024   2051           00085                 CALL SIX                                
+                      00086                 
+0025   1B86           00087                 btfsc PORTB, 7                  ;       has the 9 key been pressed? if yes then
+0026   2060           00088                 CALL NINE                               
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00089         
+0027   1106           00090                 bcf PORTB, 2                    ;       finished column 3
+                      00091 
+                      00092 
+0028   1586           00093                 bsf PORTB, 3                    ;   scan the 4th column of keys
+                      00094                 ;========================================================
+0029   1A06           00095                 btfsc PORTB, 4                  ;       has the + key been pressed? if yes then
+002A   2065           00096                 call PLUS                               
+                      00097         
+002B   1A86           00098                 btfsc PORTB, 5                  ;       has the - key been pressed? if yes then
+002C   206C           00099                 call MINUS                              
+                      00100         
+002D   1B06           00101                 btfsc PORTB, 6                  ;       has the x key been pressed? if yes then
+002E   2073           00102                 call MULT                               
+                      00103         
+002F   1B86           00104                 btfsc PORTB, 7                  ;       has the / key been pressed? if yes then
+0030   207A           00105                 call DIV                                
+                      00106         
+0031   1186           00107                 bcf PORTB, 3                    ;       finished column 4
+                      00108 
+                      00109 
+0032   0008           00110         return                                          ;       and now return to the main routine
+                      00111 ;-------------------------------------------------------------------------------------------------------
+                            ---------
+                      00112 
+                      00113 
+                      00114 
+                      00115 
+                      00116 
+                      00117 ;-------------------------------------------------------------------------------------------------------
+                            ---------
+                      00118 ;KEY FUNTIONS
+0033                  00119 ZERO:
+Warning[203]: Found opcode in column 1. (movlw)
+0033   3000           00120 movlw 0x00
+Warning[203]: Found opcode in column 1. (movwf)
+0034   00B5           00121 movwf 0x35
+Warning[203]: Found opcode in column 1. (movlw)
+0035   3030           00122 movlw 0x30
+Warning[203]: Found opcode in column 1. (call)
+0036   20AC           00123 call display_digit
+Warning[203]: Found opcode in column 1. (return)
+0037   0008           00124 return 
+                      00125 
+                      00126 
+0038                  00127 ONE:
+Warning[203]: Found opcode in column 1. (movlw)
+0038   3001           00128 movlw 0x01
+Warning[203]: Found opcode in column 1. (movwf)
+0039   00B5           00129 movwf 0x35
+Warning[203]: Found opcode in column 1. (movlw)
+003A   3031           00130 movlw 0x31
+Warning[203]: Found opcode in column 1. (call)
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+003B   20AC           00131 call display_digit
+Warning[203]: Found opcode in column 1. (return)
+003C   0008           00132 return 
+                      00133 
+003D                  00134 TWO:
+Warning[203]: Found opcode in column 1. (movlw)
+003D   3002           00135 movlw 0x02
+Warning[203]: Found opcode in column 1. (movwf)
+003E   00B5           00136 movwf 0x35
+Warning[203]: Found opcode in column 1. (movlw)
+003F   3032           00137 movlw 0x32
+Warning[203]: Found opcode in column 1. (call)
+0040   20AC           00138 call display_digit
+Warning[203]: Found opcode in column 1. (return)
+0041   0008           00139 return 
+                      00140 
+0042                  00141 THREE:
+Warning[203]: Found opcode in column 1. (movlw)
+0042   3003           00142 movlw 0x03
+Warning[203]: Found opcode in column 1. (movwf)
+0043   00B5           00143 movwf 0x35
+Warning[203]: Found opcode in column 1. (movlw)
+0044   3033           00144 movlw 0x33
+Warning[203]: Found opcode in column 1. (call)
+0045   20AC           00145 call display_digit
+Warning[203]: Found opcode in column 1. (return)
+0046   0008           00146 return 
+                      00147 
+0047                  00148 FOUR:
+Warning[203]: Found opcode in column 1. (movlw)
+0047   3004           00149 movlw 0x04
+Warning[203]: Found opcode in column 1. (movwf)
+0048   00B5           00150 movwf 0x35
+Warning[203]: Found opcode in column 1. (movlw)
+0049   3034           00151 movlw 0x34
+Warning[203]: Found opcode in column 1. (call)
+004A   20AC           00152 call display_digit
+Warning[203]: Found opcode in column 1. (return)
+004B   0008           00153 return 
+                      00154 
+004C                  00155 FIVE:
+Warning[203]: Found opcode in column 1. (movlw)
+004C   3005           00156 movlw 0x05
+Warning[203]: Found opcode in column 1. (movwf)
+004D   00B5           00157 movwf 0x35
+Warning[203]: Found opcode in column 1. (movlw)
+004E   3035           00158 movlw 0x35
+Warning[203]: Found opcode in column 1. (call)
+004F   20AC           00159 call display_digit
+Warning[203]: Found opcode in column 1. (return)
+0050   0008           00160 return 
+                      00161 
+0051                  00162 SIX:
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (movlw)
+0051   3006           00163 movlw 0x06
+Warning[203]: Found opcode in column 1. (movwf)
+0052   00B5           00164 movwf 0x35
+Warning[203]: Found opcode in column 1. (movlw)
+0053   3036           00165 movlw 0x36
+Warning[203]: Found opcode in column 1. (call)
+0054   20AC           00166 call display_digit
+Warning[203]: Found opcode in column 1. (return)
+0055   0008           00167 return 
+                      00168 
+0056                  00169 SEVEN:
+Warning[203]: Found opcode in column 1. (movlw)
+0056   3007           00170 movlw 0x07
+Warning[203]: Found opcode in column 1. (movwf)
+0057   00B5           00171 movwf 0x35
+Warning[203]: Found opcode in column 1. (movlw)
+0058   3037           00172 movlw 0x37
+Warning[203]: Found opcode in column 1. (call)
+0059   20AC           00173 call display_digit
+Warning[203]: Found opcode in column 1. (return)
+005A   0008           00174 return 
+                      00175 
+005B                  00176 EIGHT:
+Warning[203]: Found opcode in column 1. (movlw)
+005B   3008           00177 movlw 0x08
+Warning[203]: Found opcode in column 1. (movwf)
+005C   00B5           00178 movwf 0x35
+Warning[203]: Found opcode in column 1. (movlw)
+005D   3038           00179 movlw 0x38
+Warning[203]: Found opcode in column 1. (call)
+005E   20AC           00180 call display_digit
+Warning[203]: Found opcode in column 1. (return)
+005F   0008           00181 return 
+                      00182 
+0060                  00183 NINE:
+Warning[203]: Found opcode in column 1. (movlw)
+0060   3009           00184 movlw 0x09
+Warning[203]: Found opcode in column 1. (movwf)
+0061   00B5           00185 movwf 0x35
+Warning[203]: Found opcode in column 1. (movlw)
+0062   3039           00186 movlw 0x39
+Warning[203]: Found opcode in column 1. (call)
+0063   20AC           00187 call display_digit
+Warning[203]: Found opcode in column 1. (return)
+0064   0008           00188 return 
+                      00189 
+                      00190 
+                      00191 
+                      00192 
+                      00193 
+                      00194         ;-------------------------------------------------------
+Warning[207]: Found label after column 1. (PLUS)
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0065                  00195         PLUS:
+                      00196         ;storing the first operand to 0x36 so that
+                      00197         ;the second operand would come to 0x35
+0065   0835           00198         movf 0x35,w
+0066   00B6           00199         movwf 0x36
+                      00200         
+                      00201         ;sending the value 00 for addition  operation
+                      00202         ;0x37 is the varaible that stores the conditions
+0067   3000           00203         movlw 0x00
+0068   00B7           00204         movwf 0x37
+                      00205         
+0069   302B           00206         movlw 0x2B
+006A   20AC           00207         call display_digit
+006B   0008           00208         return
+                      00209         ;--------------------------------------------------------
+                      00210         
+                      00211 
+                      00212 
+                      00213 
+                      00214         ;---------------------------------------------------------
+Warning[207]: Found label after column 1. (MINUS)
+006C                  00215         MINUS:
+006C   0835           00216         movf 0x35,w
+006D   00B6           00217         movwf 0x36
+                      00218         
+006E   3001           00219         movlw 0x01
+006F   00B7           00220         movwf 0x37
+                      00221         
+0070   302D           00222         movlw 0x2D
+0071   20AC           00223         call display_digit
+0072   0008           00224         return
+                      00225         ;----------------------------------------------------------
+                      00226 
+                      00227 
+                      00228 
+                      00229         ;----------------------------------------------------------
+Warning[207]: Found label after column 1. (MULT)
+0073                  00230         MULT:
+0073   0835           00231         movf 0x35,w
+0074   00B6           00232         movwf 0x36
+                      00233         
+0075   3002           00234         movlw 0x02
+0076   00B7           00235         movwf 0x37
+                      00236         
+0077   302A           00237         movlw 0x2A
+0078   20AC           00238         call display_digit
+0079   0008           00239         return
+                      00240         ;--------------------------------------------------------------
+                      00241 
+                      00242 
+                      00243 
+                      00244         ;--------------------------------------------------------------
+Warning[207]: Found label after column 1. (DIV)
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+007A                  00245         DIV:
+007A   0835           00246         movf 0x35,w
+007B   00B6           00247         movwf 0x36
+                      00248         
+007C   3003           00249         movlw 0x03
+007D   00B7           00250         movwf 0x37
+                      00251         
+007E   302F           00252         movlw 0x2F
+007F   20AC           00253         call display_digit
+0080   0008           00254         return
+                      00255         ;------------------------------------------------------------------
+                      00256 
+                      00257 
+0081                  00258 EQUAL:
+Warning[203]: Found opcode in column 1. (movlw)
+0081   303D           00259 movlw 0x3D
+Warning[203]: Found opcode in column 1. (call)
+0082   20AC           00260 call display_digit
+                      00261 
+                      00262 ;CALCULATION PART-------------------------------------------------------
+Warning[203]: Found opcode in column 1. (BTFSS)
+0083   1CB7           00263 BTFSS 0X37,1
+Warning[203]: Found opcode in column 1. (GOTO)
+0084   2886           00264 GOTO TCOND0 ;0X
+Warning[203]: Found opcode in column 1. (GOTO)
+0085   2889           00265 GOTO TCOND1 ;1X
+                      00266 
+0086                  00267 TCOND0:
+Warning[203]: Found opcode in column 1. (BTFSS)
+0086   1C37           00268 BTFSS 0X37,0
+Warning[203]: Found opcode in column 1. (GOTO)
+0087   288C           00269 GOTO COND00
+Warning[203]: Found opcode in column 1. (GOTO)
+0088   2891           00270 GOTO COND01
+                      00271 
+0089                  00272 TCOND1:
+Warning[203]: Found opcode in column 1. (BTFSS)
+0089   1C37           00273 BTFSS 0X37,0
+Warning[203]: Found opcode in column 1. (GOTO)
+008A   2896           00274 GOTO COND10
+Warning[203]: Found opcode in column 1. (GOTO)
+008B   289E           00275 GOTO COND11
+                      00276 
+                      00277 ;Addition
+008C                  00278 COND00:
+Warning[203]: Found opcode in column 1. (MOVF)
+008C   0836           00279 MOVF 0X36,W
+Warning[203]: Found opcode in column 1. (ADDWF)
+008D   0735           00280 ADDWF 0X35,W
+Warning[203]: Found opcode in column 1. (addlw)
+008E   3E30           00281 addlw 0x30  
+Warning[203]: Found opcode in column 1. (call)
+008F   20AC           00282 call display_digit 
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (RETURN)
+0090   0008           00283 RETURN
+                      00284 
+                      00285 ;Substration
+0091                  00286 COND01:
+0091                  00287 SUBSTRACTION:
+Warning[203]: Found opcode in column 1. (MOVF)
+0091   0835           00288 MOVF 0X35,W
+Warning[203]: Found opcode in column 1. (SUBWF)
+0092   0236           00289 SUBWF 0X36,W
+Warning[203]: Found opcode in column 1. (addlw)
+0093   3E30           00290 addlw 0x30  
+Warning[203]: Found opcode in column 1. (call)
+0094   20AC           00291 call display_digit
+Warning[203]: Found opcode in column 1. (RETURN)
+0095   0008           00292 RETURN
+                      00293 
+                      00294 ;Multiplication
+0096                  00295 COND10:
+Warning[203]: Found opcode in column 1. (MOVLW)
+0096   3000           00296 MOVLW 0X00 
+0097                  00297 LOOP2:
+Warning[203]: Found opcode in column 1. (ADDWF)
+0097   0736           00298 ADDWF 0X36,W
+Warning[203]: Found opcode in column 1. (DECF)
+0098   03B5           00299 DECF 0X35,F
+Warning[203]: Found opcode in column 1. (BTFSS)
+0099   1D03           00300 BTFSS STATUS,Z
+Warning[203]: Found opcode in column 1. (GOTO)
+009A   2897           00301 GOTO LOOP2
+Warning[203]: Found opcode in column 1. (addlw)
+009B   3E30           00302 addlw 0x30  
+Warning[203]: Found opcode in column 1. (call)
+009C   20AC           00303 call display_digit
+Warning[203]: Found opcode in column 1. (RETURN)
+009D   0008           00304 RETURN 
+                      00305 
+                      00306 ;Division  0x36/0x35
+009E                  00307 COND11:
+Warning[203]: Found opcode in column 1. (MOVF)
+009E   0835           00308 MOVF 0X35,W
+009F                  00309 LP1:
+Warning[203]: Found opcode in column 1. (SUBWF)
+009F   0236           00310 SUBWF 0X36,W
+Warning[203]: Found opcode in column 1. (BTFSS)
+00A0   1C83           00311 BTFSS STATUS,DC
+Warning[203]: Found opcode in column 1. (GOTO)
+00A1   289F           00312 GOTO LP1
+                      00313 
+Warning[203]: Found opcode in column 1. (addlw)
+00A2   3E30           00314 addlw 0x30  
+Warning[203]: Found opcode in column 1. (call)
+00A3   20AC           00315 call display_digit
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[203]: Found opcode in column 1. (RETURN)
+00A4   0008           00316 RETURN 
+                      00317 ;END OF CALCULATION-----------------------------------------------
+                      00318 
+Warning[203]: Found opcode in column 1. (return)
+00A5   0008           00319 return
+                      00320 
+                      00321 
+                      00322 
+                      00323 
+                      00324 
+00A6                  00325 ON:
+Warning[203]: Found opcode in column 1. (movlw)
+00A6   3001           00326 movlw 0x01
+Warning[203]: Found opcode in column 1. (call)
+00A7   20B6           00327 call DISPLAY
+                      00328 
+Warning[203]: Found opcode in column 1. (clrf)
+00A8   01B5           00329 clrf 0x35
+Warning[203]: Found opcode in column 1. (clrf)
+00A9   01B6           00330 clrf 0x36
+Warning[203]: Found opcode in column 1. (clrf)
+00AA   01B7           00331 clrf 0x37
+Warning[203]: Found opcode in column 1. (return)
+00AB   0008           00332 return
+                      00333 ;-------------------------------------------------------------------------------------------------------
+                            ---------
+                      00334 
+                      00335 
+                      00336 
+                      00337 
+                      00338 ;Display the digit in the 7 segment---------------------------------------------------------------------
+                            ---------
+                      00339 ; LCD INITIALIZATION
+                      00340     
+                      00341                 ;If
+                      00342                 ;RS=0  Instruction command Code register is selected, allowing user to send command
+                      00343                 ;RS=1  Data register is selected allowing to send data that has to be displayed.
+                      00344 
+                      00345                 ;R\W=0  Reading
+                      00346                 ;R\W=1  Writing
+                      00347                 ;E- Enable
+                      00348 
+                      00349                 ;The enable Pin is used by the LCD to latch information at its data pins. When data is s
+                            upplied to data pins,
+                      00350                 ;a high to low pulse must be applied to this pin in order for the LCD to latch the data 
+                            present in the data pins.
+                      00351                 ;E should  Toggle
+                      00352 
+                      00353                 ;Data Mode:  RS=1, R\W=0, E=1\0
+                      00354 
+00AC                  00355 display_digit:
+00AC   1408           00356                 BSF PORTD,0; CONTROL SIGNAL TO RS
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00AD   1088           00357                 BCF PORTD,1; CONTROL SIGNAL TO R/W
+00AE   1508           00358                 BSF PORTD,2; CONTROL SIGNAL TO 'E'
+                      00359                 
+                      00360                 ;Here the value already stored in the W reg is send to DISPLAY  
+00AF   20B6           00361                 call DISPLAY
+                      00362 
+00B0   3038           00363                 MOVLW 0X38  ;initialises the display
+00B1   20B6           00364                 CALL DISPLAY
+                      00365                 
+00B2   300E           00366                 MOVLW 0X0E ; dont blink the cursor
+00B3   20B6           00367                 CALL DISPLAY
+                      00368 
+00B4   1408           00369                 BSF PORTD,0
+00B5   0008           00370                 RETURN
+                      00371 
+00B6                  00372 DISPLAY:   
+00B6   0087           00373                 MOVWF PORTC
+                      00374 
+00B7   1108           00375                 BCF PORTD,2
+00B8   20BD           00376                 CALL DELAY1
+                      00377 
+00B9   1508           00378                 BSF PORTD,2
+00BA   20BD           00379                 CALL DELAY1
+                      00380 
+00BB   1008           00381                 BCF PORTD,0
+00BC   0008           00382                 RETURN
+                      00383 
+00BD                  00384 DELAY1: 
+00BD   300D           00385                 MOVLW   D'13'    ;A VERY SMALL DELAY
+00BE   00B8           00386                 MOVWF   0X38
+00BF   30FB           00387                 MOVLW   D'251'
+00C0   00B9           00388                 MOVWF   0X39
+Warning[207]: Found label after column 1. (LOOP)
+Message[305]: Using default destination of 1 (file).
+00C1   0BB9           00389                 LOOP:   DECFSZ  0X39
+00C2   28C1           00390                                 GOTO    LOOP
+Message[305]: Using default destination of 1 (file).
+00C3   0BB8           00391                                 DECFSZ  0X38
+00C4   28C1           00392                                 GOTO    LOOP
+00C5   0008           00393                 RETURN
+00C6   0008           00394                 RETURN  
+                      00395 
+00C7   0008           00396         return                                  
+                      00397 ;-------------------------------------------------------------------------------------------------------
+                            ---------
+                      00398 
+                      00399 
+                      00400         end                                             
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE 11
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADCS2                             00000006
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2                             0000001B
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CHS0                              00000003
+CHS1                              00000004
+CHS2                              00000005
+CIS                               00000003
+CKE                               00000006
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE 12
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CKP                               00000004
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000009C
+CMIE                              00000006
+CMIF                              00000006
+COND00                            0000008C
+COND01                            00000091
+COND10                            00000096
+COND11                            0000009E
+CREN                              00000004
+CSRC                              00000007
+CVR0                              00000000
+CVR1                              00000001
+CVR2                              00000002
+CVR3                              00000003
+CVRCON                            0000009D
+CVREN                             00000007
+CVROE                             00000006
+CVRR                              00000005
+D                                 00000005
+DATA_ADDRESS                      00000005
+DC                                00000001
+DELAY1                            000000BD
+DISPLAY                           000000B6
+DIV                               0000007A
+D_A                               00000005
+D_NOT_A                           00000005
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+EIGHT                             0000005B
+EQUAL                             00000081
+F                                 00000001
+FERR                              00000002
+FIVE                              0000004C
+FOUR                              00000047
+FSR                               00000004
+GCEN                              00000007
+GIE                               00000007
+GO                                00000002
+GO_DONE                           00000002
+GO_NOT_DONE                       00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE 13
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+I2C_STOP                          00000004
+IBF                               00000007
+IBOV                              00000005
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+LOOP                              000000C1
+LOOP2                             00000097
+LP1                               0000009F
+MINUS                             0000006C
+MULT                              00000073
+NINE                              00000060
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000002
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OBF                               00000006
+OERR                              00000001
+ON                                000000A6
+ONE                               00000038
+OPTION_REG                        00000081
+P                                 00000004
+PCFG0                             00000000
+PCFG1                             00000001
+PCFG2                             00000002
+PCFG3                             00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PLUS                              00000065
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE 14
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PORTE                             00000009
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSPIE                             00000007
+PSPIF                             00000007
+PSPMODE                           00000004
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
+RE1                               00000001
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE 15
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RE2                               00000002
+READ_WRITE                        00000002
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RX9                               00000006
+RX9D                              00000000
+R_NOT_W                           00000002
+R_W                               00000002
+S                                 00000003
+SEN                               00000000
+SEVEN                             00000056
+SIX                               00000051
+SMP                               00000007
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPOV                             00000006
+SSPSTAT                           00000094
+STATUS                            00000003
+SUBSTRACTION                      00000091
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TCOND0                            00000086
+TCOND1                            00000089
+THREE                             00000042
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE 16
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000087
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000088
+TRISD0                            00000000
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+TRISD4                            00000004
+TRISD5                            00000005
+TRISD6                            00000006
+TRISD7                            00000007
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRMT                              00000001
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE 17
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TWO                               0000003D
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+W                                 00000000
+WCOL                              00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+ZERO                              00000033
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_BOREN_OFF                        00003FBF
+_BOREN_ON                         00003FFF
+_CONFIG                           00002007
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003EFF
+_CP_ALL                           00001FFF
+_CP_OFF                           00003FFF
+_CP_ON                            00001FFF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         000037FF
+_DEVID1                           00002006
+_FOSC_EXTRC                       00003FFF
+_FOSC_HS                          00003FFE
+_FOSC_LP                          00003FFC
+_FOSC_XT                          00003FFD
+_HS_OSC                           00003FFE
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_LP_OSC                           00003FFC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC                           00003FFF
+_WDTE_OFF                         00003FFB
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+MPASM  5.51                      UNTITLED.ASM   4-30-2015  17:27:00         PAGE 18
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FFD
+__16F877A                         00000001
+__DEBUG                           1
+begin                             00000008
+check_keypad                      0000000A
+display_digit                     000000AC
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXX-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   200
+Program Memory Words Free:  7992
+
+
+Errors   :     0
+Warnings :   100 reported,     0 suppressed
+Messages :     5 reported,     0 suppressed
+
+
