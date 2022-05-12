@@ -1,9 +1,11 @@
 # PIC16F877A Simple Calculator
 
- ![Image](https://raw.githubusercontent.com/arjunsk/pic16f877a-calculator/master/screenshot/1.png)
+ ![Image](https://raw.githubusercontent.com/TyurinIvan/pic16f877a-calculator/master/screenshot/mult.JPG)
 
 Build with MPLAB IDE.
 Emulated in PROTEUS 8.
+
+This calculator does perform basic arithmetic operations in the interval 0-255 (1 byte). This condition applies to both operands and the output result.
 
 ###### Please Find other PIC16F877A Projects:
 
