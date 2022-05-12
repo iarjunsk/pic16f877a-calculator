@@ -1,0 +1,91 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Thu Apr 30 17:27:03 2015
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000190
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x0000c7      
+            200 out of 8454 program addresses used, program memory utilization is 2%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   COND00   0x00008c    program     static D:\calculator\Untitled.asm
+                   COND01   0x000091    program     static D:\calculator\Untitled.asm
+                   COND10   0x000096    program     static D:\calculator\Untitled.asm
+                   COND11   0x00009e    program     static D:\calculator\Untitled.asm
+                   DELAY1   0x0000bd    program     static D:\calculator\Untitled.asm
+                  DISPLAY   0x0000b6    program     static D:\calculator\Untitled.asm
+                      DIV   0x00007a    program     static D:\calculator\Untitled.asm
+                    EIGHT   0x00005b    program     static D:\calculator\Untitled.asm
+                    EQUAL   0x000081    program     static D:\calculator\Untitled.asm
+                     FIVE   0x00004c    program     static D:\calculator\Untitled.asm
+                     FOUR   0x000047    program     static D:\calculator\Untitled.asm
+                     LOOP   0x0000c1    program     static D:\calculator\Untitled.asm
+                    LOOP2   0x000097    program     static D:\calculator\Untitled.asm
+                      LP1   0x00009f    program     static D:\calculator\Untitled.asm
+                    MINUS   0x00006c    program     static D:\calculator\Untitled.asm
+                     MULT   0x000073    program     static D:\calculator\Untitled.asm
+                     NINE   0x000060    program     static D:\calculator\Untitled.asm
+                       ON   0x0000a6    program     static D:\calculator\Untitled.asm
+                      ONE   0x000038    program     static D:\calculator\Untitled.asm
+                     PLUS   0x000065    program     static D:\calculator\Untitled.asm
+                    SEVEN   0x000056    program     static D:\calculator\Untitled.asm
+                      SIX   0x000051    program     static D:\calculator\Untitled.asm
+             SUBSTRACTION   0x000091    program     static D:\calculator\Untitled.asm
+                   TCOND0   0x000086    program     static D:\calculator\Untitled.asm
+                   TCOND1   0x000089    program     static D:\calculator\Untitled.asm
+                    THREE   0x000042    program     static D:\calculator\Untitled.asm
+                      TWO   0x00003d    program     static D:\calculator\Untitled.asm
+                     ZERO   0x000033    program     static D:\calculator\Untitled.asm
+                    begin   0x000008    program     static D:\calculator\Untitled.asm
+             check_keypad   0x00000a    program     static D:\calculator\Untitled.asm
+            display_digit   0x0000ac    program     static D:\calculator\Untitled.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                    begin   0x000008    program     static D:\calculator\Untitled.asm
+             check_keypad   0x00000a    program     static D:\calculator\Untitled.asm
+                     ZERO   0x000033    program     static D:\calculator\Untitled.asm
+                      ONE   0x000038    program     static D:\calculator\Untitled.asm
+                      TWO   0x00003d    program     static D:\calculator\Untitled.asm
+                    THREE   0x000042    program     static D:\calculator\Untitled.asm
+                     FOUR   0x000047    program     static D:\calculator\Untitled.asm
+                     FIVE   0x00004c    program     static D:\calculator\Untitled.asm
+                      SIX   0x000051    program     static D:\calculator\Untitled.asm
+                    SEVEN   0x000056    program     static D:\calculator\Untitled.asm
+                    EIGHT   0x00005b    program     static D:\calculator\Untitled.asm
+                     NINE   0x000060    program     static D:\calculator\Untitled.asm
+                     PLUS   0x000065    program     static D:\calculator\Untitled.asm
+                    MINUS   0x00006c    program     static D:\calculator\Untitled.asm
+                     MULT   0x000073    program     static D:\calculator\Untitled.asm
+                      DIV   0x00007a    program     static D:\calculator\Untitled.asm
+                    EQUAL   0x000081    program     static D:\calculator\Untitled.asm
+                   TCOND0   0x000086    program     static D:\calculator\Untitled.asm
+                   TCOND1   0x000089    program     static D:\calculator\Untitled.asm
+                   COND00   0x00008c    program     static D:\calculator\Untitled.asm
+             SUBSTRACTION   0x000091    program     static D:\calculator\Untitled.asm
+                   COND01   0x000091    program     static D:\calculator\Untitled.asm
+                   COND10   0x000096    program     static D:\calculator\Untitled.asm
+                    LOOP2   0x000097    program     static D:\calculator\Untitled.asm
+                   COND11   0x00009e    program     static D:\calculator\Untitled.asm
+                      LP1   0x00009f    program     static D:\calculator\Untitled.asm
+                       ON   0x0000a6    program     static D:\calculator\Untitled.asm
+            display_digit   0x0000ac    program     static D:\calculator\Untitled.asm
+                  DISPLAY   0x0000b6    program     static D:\calculator\Untitled.asm
+                   DELAY1   0x0000bd    program     static D:\calculator\Untitled.asm
+                     LOOP   0x0000c1    program     static D:\calculator\Untitled.asm
+
+
